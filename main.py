@@ -5,14 +5,17 @@ import tkinter as tk
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+from ctypes import windll
 
 class DemoApp(tk.Tk):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
+        windll.shcore.SetProcessDpiAwareness(1)
+
         self.title('Oscilloscope demo')
+        self.geometry('1024x768')
 
         self._mainframe = ttk.Frame(self, padding='3 3 12 12')
         self._mainframe.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.W, tk.E))
@@ -24,16 +27,16 @@ class DemoApp(tk.Tk):
         self.mainframe.rowconfigure(0, weight=4)
         self.mainframe.rowconfigure(1, weight=1)
 
-        fig = Figure(figsize=(5, 4), dpi=100)
+        fig = Figure(figsize=(8, 6), dpi=100)
         self._phi = 0
         self._dt = 40
 
         self._canvas = FigureCanvasTkAgg(fig, master=self.mainframe)  # A tk.DrawingArea.
         self._canvas.draw()
-        self._canvas.get_tk_widget().grid(column=0, row=0)
+        self._canvas.get_tk_widget().grid(column=0, row=0, padx=10, pady=10)
 
         self._radios = ttk.Labelframe(master=self.mainframe, text='Wave type', padding='10')
-        self._radios.grid(column=1, row=0)
+        self._radios.grid(column=1, row=0, padx=10, pady=10, sticky=(tk.N, tk.S, tk.W, tk.E))
 
         self._wavetype = tk.StringVar(value='sin')
 
@@ -43,7 +46,7 @@ class DemoApp(tk.Tk):
         ttk.Radiobutton(self._radios, text='Sawtooth', value='saw', variable=self._wavetype).pack(fill='x')
 
         self._playbar = ttk.Frame(master=self.mainframe)
-        self._playbar.grid(column=0, row=1, columnspan=2)       
+        self._playbar.grid(column=0, row=1, columnspan=2, padx=10, pady=10)     
 
         self._playing = True
 
